@@ -170,29 +170,33 @@ object Indexing_lab_1 {
 		notTerms: Option[List[String]]) {
 		
 		val andPostings = andTerms match {
-			case Some(terms) => terms.map(term => dictionary.get(term).get.toList)
+			case Some(terms) => terms.map(dictionary.get(_).get.toList)
 			case None => List.empty[List[Int]]
 		}
+		val andResult = andFilter(andPostings)
+		println("andPostings: " + andPostings)
+		println("andResult: " + andResult)
 		
 		val orPostings = orTerms match {
-			case Some(terms) => terms.map(term => dictionary.get(term))
+			case Some(terms) => terms.map(dictionary.get(_).get.toList)
 			case None =>
 		}
+		println("orPostings: " + orPostings)
 		
 		val notPostings = notTerms match {
-			case Some(terms) => terms.map(term => dictionary.get(term))
+			case Some(terms) => terms.map(dictionary.get(_).get.toList)
 			case None =>
 		}
+		println("notPostings: " + notPostings)
 		
-		println("andPostings: " + andPostings)
-		val andResult = andFilter(andPostings)
-		println("andResult: " + andResult)
-	}                                         //> query: (andTerms: Option[List[String]], orTerms: Option[List[String]], notT
+	} // end query                            //> query: (andTerms: Option[List[String]], orTerms: Option[List[String]], notT
                                                   //| erms: Option[List[String]])Unit
 	
 	query(Option(List("Caesar", "Brutus")), None, None)
                                                   //> andPostings: List(List(100, 101, 102, 103, 104), List(100, 101, 102))
                                                   //| andResult: List(100, 101, 102)
+                                                  //| orPostings: ()
+                                                  //| notPostings: ()
 }
 /*
 
