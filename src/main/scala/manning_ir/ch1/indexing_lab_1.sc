@@ -4,6 +4,12 @@ import scala.io.Source
 import scala.collection.mutable.Map
 import scala.collection.mutable.SortedSet
 
+/*
+ * Inspired by my reading of Christopher Manning's Introduction to Information Retrieval,
+ * Ch 1, I'm coding a basic inverse index scheme for six plays of Shakespeare and some
+ *	 test queries. At this point I'm not trying to optimize a production system, but rather
+ * am just following a rough outline of the processes and features discussed.
+ */
 object Indexing_lab_1 {
 
 	case class Document(
@@ -30,36 +36,36 @@ object Indexing_lab_1 {
  		101,
  		"Hamlet.txt",
  		"William Shakespear"
- 	)                                         //> hamlet  : manning_ir.ch1.Indexing_lab_1.Document = Document(101,Hamlet.txt,W
-                                                  //| illiam Shakespear,0,None,TreeSet())
+ 	)                                         //> hamlet  : manning_ir.ch1.Indexing_lab_1.Document = Document(101,Hamlet.txt,
+                                                  //| William Shakespear,0,None,TreeSet())
  	
  	val julius = Document(
  		102,
  		"Julius_Caesar.txt",
  		"William Shakespear"
- 	)                                         //> julius  : manning_ir.ch1.Indexing_lab_1.Document = Document(102,Julius_Caesa
-                                                  //| r.txt,William Shakespear,0,None,TreeSet())
+ 	)                                         //> julius  : manning_ir.ch1.Indexing_lab_1.Document = Document(102,Julius_Caes
+                                                  //| ar.txt,William Shakespear,0,None,TreeSet())
  	
  	val macbeth = Document(
  		103,
  		"Macbeth.txt",
  		"William Shakespear"
- 	)                                         //> macbeth  : manning_ir.ch1.Indexing_lab_1.Document = Document(103,Macbeth.txt
-                                                  //| ,William Shakespear,0,None,TreeSet())
+ 	)                                         //> macbeth  : manning_ir.ch1.Indexing_lab_1.Document = Document(103,Macbeth.tx
+                                                  //| t,William Shakespear,0,None,TreeSet())
  	
  	val othello = Document(
  		104,
  		"Othello.txt",
  		"William Shakespear"
- 	)                                         //> othello  : manning_ir.ch1.Indexing_lab_1.Document = Document(104,Othello.txt
-                                                  //| ,William Shakespear,0,None,TreeSet())
+ 	)                                         //> othello  : manning_ir.ch1.Indexing_lab_1.Document = Document(104,Othello.tx
+                                                  //| t,William Shakespear,0,None,TreeSet())
  	
  	val tempest = Document(
  		105,
  		"The_Tempest.txt",
  		"William Shakespear"
- 	)                                         //> tempest  : manning_ir.ch1.Indexing_lab_1.Document = Document(105,The_Tempest
-                                                  //| .txt,William Shakespear,0,None,TreeSet())
+ 	)                                         //> tempest  : manning_ir.ch1.Indexing_lab_1.Document = Document(105,The_Tempes
+                                                  //| t.txt,William Shakespear,0,None,TreeSet())
   // -------------------------------------- //
   
   val root_path = "/Users/hieronymus/Development/Workspace_BAK/Intro IR Manning/"
