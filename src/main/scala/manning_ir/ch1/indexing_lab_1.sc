@@ -54,12 +54,13 @@ object Indexing_lab_1 {
 		  			doc.tokensUnique += term
 		  		}
 			})
-		} // end for line
-  } // end indexDocument                          //> indexDocument: (doc: manning_ir.ch1.Indexing_lab_1.Document)Unit
+		}
+  }                                               //> indexDocument: (doc: manning_ir.ch1.Indexing_lab_1.Document)Unit
 	
 	// Recursive
 	def andFilter(xs0: List[List[Int]]): List[Int] = {
 		xs0 match {
+			case Nil => Nil
 			case x :: Nil => x
 			case x :: xs => andFilter(x.filter(xs.head.contains(_)) :: xs.tail)
 		}
@@ -113,7 +114,7 @@ object Indexing_lab_1 {
 	} // end query                            //> query: (andTerms: Option[List[String]], orTerms: Option[List[String]], notT
                                                   //| erms: Option[List[String]])List[Int]
 	
-  // ------- Documents ---------------------------------- //
+  // ------- Documents ---------------- //
     
   val antAndCleo = Document(
  		100,
@@ -221,16 +222,50 @@ object Indexing_lab_1 {
                                                   //| 01, 104, 105))
 	dictionary.get("Othello")                 //> res8: Option[scala.collection.mutable.SortedSet[Int]] = Some(TreeSet(104))
 	
-	// Initiate combined query
-	// Caesar AND Brutus OR Othello NOT Calpurnia
-	val qRes1 = query(Option(List("Caesar", "Brutus")), Option(List("Othello")), Option(List("Calpurnia")))
-                                                  //> andPostings: List(List(100, 101, 102, 103, 104), List(100, 101, 102))
+	// Initiate combined queries
+	
+	// ((Caesar AND Brutus) OR Othello) NOT Calpurnia
+	val qRes1 = query(
+		Option(List("Caesar", "Brutus")), // AND
+		Option(List("Othello")), // OR
+		Option(List("Calpurnia")) // NOT
+	)                                         //> andPostings: List(List(100, 101, 102, 103, 104), List(100, 101, 102))
                                                   //| andResult: List(100, 101, 102)
                                                   //| orPostings: List(104)
                                                   //| andOrResult: List(100, 101, 102, 104)
                                                   //| notPostings: List(102)
                                                   //| notResult: List(100, 101, 104)
                                                   //| qRes1  : List[Int] = List(100, 101, 104)
+  // (Caesar OR Brutus) NOT Calpurnia
+  val qRes2 = query(None, Option(List("Caesar", "Brutus")), Option(List("Calpurnia")))
+                                                  //> andPostings: List()
+                                                  //| andResult: List()
+                                                  //| orPostings: List(100, 101, 102, 103, 104, 100, 101, 102)
+                                                  //| andOrResult: List(100, 101, 102, 103, 104)
+                                                  //| notPostings: List(102)
+                                                  //| notResult: List(100, 101, 103, 104)
+                                                  //| qRes2  : List[Int] = List(100, 101, 103, 104)
+  // (Caesar AND Brutus) NOT Calpurnia
+  	val qRes3 = query(Option(List("Caesar", "Brutus")), None, Option(List("Calpurnia")))
+                                                  //> andPostings: List(List(100, 101, 102, 103, 104), List(100, 101, 102))
+                                                  //| andResult: List(100, 101, 102)
+                                                  //| orPostings: List()
+                                                  //| andOrResult: List(100, 101, 102)
+                                                  //| notPostings: List(102)
+                                                  //| notResult: List(100, 101)
+                                                  //| qRes3  : List[Int] = List(100, 101)
+  // (Caesar AND Brutus) OR Othello
+  val qRes4 = query(Option(List("Caesar", "Brutus")), Option(List("Othello")), None)
+                                                  //> andPostings: List(List(100, 101, 102, 103, 104), List(100, 101, 102))
+                                                  //| andResult: List(100, 101, 102)
+                                                  //| orPostings: List(104)
+                                                  //| andOrResult: List(100, 101, 102, 104)
+                                                  //| notPostings: List()
+                                                  //| notResult: List(100, 101, 102, 104)
+                                                  //| qRes4  : List[Int] = List(100, 101, 102, 104)
+  
+  
+  
 }
 /*
 
