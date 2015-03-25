@@ -10,7 +10,7 @@ import scala.collection.mutable.SortedSet
  *	 test queries. At this point I'm not trying to optimize a production system, but rather
  * am just following a rough outline of the processes and features discussed.
  * For now, the postings record only a binary (Boolean) term occurence in the documents.
- * I'm will likely add term frequency when it is addressed specifically in the book.
+ * I will likely add term frequency when it is specifically addressed in the book.
  */
 object Indexing_lab_1 {
 
@@ -30,7 +30,7 @@ object Indexing_lab_1 {
 	val dictionary = Map.empty[String, SortedSet[Int]]
                                                   //> dictionary  : scala.collection.mutable.Map[String,scala.collection.mutable.
                                                   //| SortedSet[Int]] = Map()
-  // ----------------------------------------- //
+  // ------- Documents ---------------------------------- //
     
   val antAndCleo = Document(
  		100,
@@ -72,7 +72,7 @@ object Indexing_lab_1 {
  		"William Shakespear"
  	)                                         //> tempest  : manning_ir.ch1.Indexing_lab_1.Document = Document(105,The_Tempes
                                                   //| t.txt,William Shakespear,0,None,TreeSet())
-  // -------------------------------------- //
+  // ------ Indexing ------------------- //
   
   val root_path = "/Users/hieronymus/Development/Workspace_BAK/Intro IR Manning/"
                                                   //> root_path  : String = /Users/hieronymus/Development/Workspace_BAK/Intro IR 
@@ -112,6 +112,7 @@ object Indexing_lab_1 {
 	
 	dictionary.keys.size                      //> res0: Int = 13743
 	
+	// Logging
 	docs foreach(doc => {
 		println("------------------")
 		println(doc.name)
@@ -141,6 +142,57 @@ object Indexing_lab_1 {
                                                   //| The_Tempest.txt
                                                   //| 3809
                                                   //| 17468
+  // ----- Queries ---------------- //
+  
+  dictionary.get("Antony")                        //> res1: Option[scala.collection.mutable.SortedSet[Int]] = Some(TreeSet(100, 1
+                                                  //| 02))
+	dictionary.get("Brutus")                  //> res2: Option[scala.collection.mutable.SortedSet[Int]] = Some(TreeSet(100, 1
+                                                  //| 01, 102))
+	dictionary.get("Caesar")                  //> res3: Option[scala.collection.mutable.SortedSet[Int]] = Some(TreeSet(100, 1
+                                                  //| 01, 102, 103, 104))
+	dictionary.get("Calpurnia")               //> res4: Option[scala.collection.mutable.SortedSet[Int]] = Some(TreeSet(102))
+	dictionary.get("Cleopatra")               //> res5: Option[scala.collection.mutable.SortedSet[Int]] = Some(TreeSet(100))
+	dictionary.get("mercy")                   //> res6: Option[scala.collection.mutable.SortedSet[Int]] = Some(TreeSet(100, 1
+                                                  //| 01, 103, 104, 105))
+	dictionary.get("worser")                  //> res7: Option[scala.collection.mutable.SortedSet[Int]] = Some(TreeSet(100, 1
+                                                  //| 01, 104, 105))
+	// Recursive
+	def andFilter(xs0: List[List[Int]]): List[Int] = {
+		xs0 match {
+			case x :: Nil => x
+			case x :: xs => andFilter(x.filter(xs.head.contains(_)) :: xs.tail)
+		}
+	}                                         //> andFilter: (xs0: List[List[Int]])List[Int]
+	
+	def query(
+		andTerms: Option[List[String]],
+		orTerms: Option[List[String]],
+		notTerms: Option[List[String]]) {
+		
+		val andPostings = andTerms match {
+			case Some(terms) => terms.map(term => dictionary.get(term).get.toList)
+			case None => List.empty[List[Int]]
+		}
+		
+		val orPostings = orTerms match {
+			case Some(terms) => terms.map(term => dictionary.get(term))
+			case None =>
+		}
+		
+		val notPostings = notTerms match {
+			case Some(terms) => terms.map(term => dictionary.get(term))
+			case None =>
+		}
+		
+		println("andPostings: " + andPostings)
+		val andResult = andFilter(andPostings)
+		println("andResult: " + andResult)
+	}                                         //> query: (andTerms: Option[List[String]], orTerms: Option[List[String]], notT
+                                                  //| erms: Option[List[String]])Unit
+	
+	query(Option(List("Caesar", "Brutus")), None, None)
+                                                  //> andPostings: List(List(100, 101, 102, 103, 104), List(100, 101, 102))
+                                                  //| andResult: List(100, 101, 102)
 }
 /*
 
