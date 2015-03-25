@@ -100,13 +100,13 @@ object Indexing_lab_1 {
 		} // end for line
   } // end indexDocument                          //> indexDocument: (doc: manning_ir.ch1.Indexing_lab_1.Document)Unit
   
-  val docs = List(antAndCleo, hamlet, julius, macbeth, othello, tempest)
-                                                  //> docs  : List[manning_ir.ch1.Indexing_lab_1.Document] = List(Document(100,An
-                                                  //| tony_and_Cleopatra.txt,William Shakespear,0,None,TreeSet()), Document(101,H
-                                                  //| amlet.txt,William Shakespear,0,None,TreeSet()), Document(102,Julius_Caesar.
-                                                  //| txt,William Shakespear,0,None,TreeSet()), Document(103,Macbeth.txt,William 
-                                                  //| Shakespear,0,None,TreeSet()), Document(104,Othello.txt,William Shakespear,0
-                                                  //| ,None,TreeSet()), Document(105,The_Tempest.txt,William Shakespear,0,None,Tr
+  val docs = List(antAndCleo, hamlet, julius, macbeth, othello, tempest).reverse
+                                                  //> docs  : List[manning_ir.ch1.Indexing_lab_1.Document] = List(Document(105,Th
+                                                  //| e_Tempest.txt,William Shakespear,0,None,TreeSet()), Document(104,Othello.tx
+                                                  //| t,William Shakespear,0,None,TreeSet()), Document(103,Macbeth.txt,William Sh
+                                                  //| akespear,0,None,TreeSet()), Document(102,Julius_Caesar.txt,William Shakespe
+                                                  //| ar,0,None,TreeSet()), Document(101,Hamlet.txt,William Shakespear,0,None,Tre
+                                                  //| eSet()), Document(100,Antony_and_Cleopatra.txt,William Shakespear,0,None,Tr
                                                   //| eeSet()))
   docs foreach indexDocument
 	
@@ -119,29 +119,29 @@ object Indexing_lab_1 {
 		println(doc.tokensUnique.size)
 		println(doc.tokensTotal)
 	})                                        //> ------------------
-                                                  //| Antony_and_Cleopatra.txt
-                                                  //| 4775
-                                                  //| 27137
-                                                  //| ------------------
-                                                  //| Hamlet.txt
-                                                  //| 5658
-                                                  //| 32320
-                                                  //| ------------------
-                                                  //| Julius_Caesar.txt
-                                                  //| 3551
-                                                  //| 20928
-                                                  //| ------------------
-                                                  //| Macbeth.txt
-                                                  //| 4031
-                                                  //| 18314
+                                                  //| The_Tempest.txt
+                                                  //| 3809
+                                                  //| 17468
                                                   //| ------------------
                                                   //| Othello.txt
                                                   //| 4613
                                                   //| 28026
                                                   //| ------------------
-                                                  //| The_Tempest.txt
-                                                  //| 3809
-                                                  //| 17468
+                                                  //| Macbeth.txt
+                                                  //| 4031
+                                                  //| 18314
+                                                  //| ------------------
+                                                  //| Julius_Caesar.txt
+                                                  //| 3551
+                                                  //| 20928
+                                                  //| ------------------
+                                                  //| Hamlet.txt
+                                                  //| 5658
+                                                  //| 32320
+                                                  //| ------------------
+                                                  //| Antony_and_Cleopatra.txt
+                                                  //| 4775
+                                                  //| 27137
   // ----- Queries ---------------- //
   
   dictionary.get("Antony")                        //> res1: Option[scala.collection.mutable.SortedSet[Int]] = Some(TreeSet(100, 1
@@ -172,11 +172,15 @@ object Indexing_lab_1 {
 		combSet.toList
 	}                                         //> combAndOr: (andPostings: List[Int], orPostings: List[Int])List[Int]
 	
+	def notFilter(andOrPostings: List[Int], notPostings: List[Int]): List[Int] = {
+		andOrPostings.filter(!notPostings.contains(_))
+	}                                         //> notFilter: (andOrPostings: List[Int], notPostings: List[Int])List[Int]
+	
 	// Rough implementation of AND, OR, and NOT using List params for each.
 	def query(
 		andTerms: Option[List[String]],
 		orTerms: Option[List[String]],
-		notTerms: Option[List[String]]) {
+		notTerms: Option[List[String]]): List[Int] = {
 		
 		// AND
 		val andPostings = andTerms match {
@@ -192,27 +196,32 @@ object Indexing_lab_1 {
 			case Some(terms) => terms.flatMap(dictionary.get(_).get)
 			case None => List.empty[Int]
 		}
-		val orResult = combAndOr(andResult, orPostings)
+		val andOrResult = combAndOr(andResult, orPostings)
 		println("orPostings: " + orPostings)
-		println("orResult: " + orResult)
+		println("andOrResult: " + andOrResult)
 		
 		// NOT
 		val notPostings = notTerms match {
-			case Some(terms) => terms.map(dictionary.get(_).get)
-			case None => List.empty[List[Int]]
+			case Some(terms) => terms.flatMap(dictionary.get(_).get)
+			case None => List.empty[Int]
 		}
+		val notResult = notFilter(andOrResult, notPostings)
 		println("notPostings: " + notPostings)
+		println("notResult: " + notResult)
 		
+		notResult // final step in process chain
 	} // end query                            //> query: (andTerms: Option[List[String]], orTerms: Option[List[String]], notT
-                                                  //| erms: Option[List[String]])Unit
+                                                  //| erms: Option[List[String]])List[Int]
 	// Initiate query
-	// Caesar AND Brutus
-	query(Option(List("Caesar", "Brutus")), Option(List("Othello")), Option(List("Calpurnia")))
+	// Caesar AND Brutus OR Othello NOT Calpurnia
+	val qRes1 = query(Option(List("Caesar", "Brutus")), Option(List("Othello")), Option(List("Calpurnia")))
                                                   //> andPostings: List(List(100, 101, 102, 103, 104), List(100, 101, 102))
                                                   //| andResult: List(100, 101, 102)
                                                   //| orPostings: List(104)
-                                                  //| orResult: List(100, 101, 102, 104)
-                                                  //| notPostings: List(TreeSet(102))
+                                                  //| andOrResult: List(100, 101, 102, 104)
+                                                  //| notPostings: List(102)
+                                                  //| notResult: List(100, 101, 104)
+                                                  //| qRes1  : List[Int] = List(100, 101, 104)
 }
 /*
 
