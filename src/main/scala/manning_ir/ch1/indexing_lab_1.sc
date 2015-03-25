@@ -156,6 +156,8 @@ object Indexing_lab_1 {
                                                   //| 01, 103, 104, 105))
 	dictionary.get("worser")                  //> res7: Option[scala.collection.mutable.SortedSet[Int]] = Some(TreeSet(100, 1
                                                   //| 01, 104, 105))
+	dictionary.get("Othello")                 //> res8: Option[scala.collection.mutable.SortedSet[Int]] = Some(TreeSet(104))
+	
 	// Recursive
 	def andFilter(xs0: List[List[Int]]): List[Int] = {
 		xs0 match {
@@ -164,11 +166,19 @@ object Indexing_lab_1 {
 		}
 	}                                         //> andFilter: (xs0: List[List[Int]])List[Int]
 	
+	// Combines AND with OR postings
+	def combAndOr(andPostings: List[Int], orPostings: List[Int]): List[Int] = {
+		val combSet = collection.SortedSet(andPostings: _*) ++ orPostings
+		combSet.toList
+	}                                         //> combAndOr: (andPostings: List[Int], orPostings: List[Int])List[Int]
+	
+	// Rough implementation of AND, OR, and NOT using List params for each.
 	def query(
 		andTerms: Option[List[String]],
 		orTerms: Option[List[String]],
 		notTerms: Option[List[String]]) {
 		
+		// AND
 		val andPostings = andTerms match {
 			case Some(terms) => terms.map(dictionary.get(_).get.toList)
 			case None => List.empty[List[Int]]
@@ -176,27 +186,33 @@ object Indexing_lab_1 {
 		val andResult = andFilter(andPostings)
 		println("andPostings: " + andPostings)
 		println("andResult: " + andResult)
-		
+				
+		// OR
 		val orPostings = orTerms match {
-			case Some(terms) => terms.map(dictionary.get(_).get.toList)
-			case None =>
+			case Some(terms) => terms.flatMap(dictionary.get(_).get)
+			case None => List.empty[Int]
 		}
+		val orResult = combAndOr(andResult, orPostings)
 		println("orPostings: " + orPostings)
+		println("orResult: " + orResult)
 		
+		// NOT
 		val notPostings = notTerms match {
-			case Some(terms) => terms.map(dictionary.get(_).get.toList)
-			case None =>
+			case Some(terms) => terms.map(dictionary.get(_).get)
+			case None => List.empty[List[Int]]
 		}
 		println("notPostings: " + notPostings)
 		
 	} // end query                            //> query: (andTerms: Option[List[String]], orTerms: Option[List[String]], notT
                                                   //| erms: Option[List[String]])Unit
-	
-	query(Option(List("Caesar", "Brutus")), None, None)
+	// Initiate query
+	// Caesar AND Brutus
+	query(Option(List("Caesar", "Brutus")), Option(List("Othello")), Option(List("Calpurnia")))
                                                   //> andPostings: List(List(100, 101, 102, 103, 104), List(100, 101, 102))
                                                   //| andResult: List(100, 101, 102)
-                                                  //| orPostings: ()
-                                                  //| notPostings: ()
+                                                  //| orPostings: List(104)
+                                                  //| orResult: List(100, 101, 102, 104)
+                                                  //| notPostings: List(TreeSet(102))
 }
 /*
 
