@@ -9,6 +9,8 @@ import scala.collection.mutable.SortedSet
  * Ch 1, I'm coding a basic inverse index scheme for six plays of Shakespeare and some
  *	 test queries. At this point I'm not trying to optimize a production system, but rather
  * am just following a rough outline of the processes and features discussed.
+ * For now, the postings record only a binary (Boolean) term occurence in the documents.
+ * I'm will likely add term frequency when it is addressed specifically in the book.
  */
 object Indexing_lab_1 {
 
@@ -21,17 +23,21 @@ object Indexing_lab_1 {
 		var tokensUnique: SortedSet[String] = SortedSet.empty[String]
 	)
 	
+	// TODO: I'm not sure that there is any optimization to be gained by using a SortedSet.
+	// Manning discusses sorting as part of optimizing the algorithms he presents. But I'm
+	// not sure it really translates to Scala. However, I'm sure there are other optimizations
+	// that could or should be done for a production context.
 	val dictionary = Map.empty[String, SortedSet[Int]]
-                                                  //> dictionary  : scala.collection.mutable.Map[String,scala.collection.mutable.S
-                                                  //| ortedSet[Int]] = Map()
+                                                  //> dictionary  : scala.collection.mutable.Map[String,scala.collection.mutable.
+                                                  //| SortedSet[Int]] = Map()
   // ----------------------------------------- //
     
   val antAndCleo = Document(
  		100,
  		"Antony_and_Cleopatra.txt",
  		"William Shakespear"
- 	)                                         //> antAndCleo  : manning_ir.ch1.Indexing_lab_1.Document = Document(100,Antony_a
-                                                  //| nd_Cleopatra.txt,William Shakespear,0,None,TreeSet())
+ 	)                                         //> antAndCleo  : manning_ir.ch1.Indexing_lab_1.Document = Document(100,Antony_
+                                                  //| and_Cleopatra.txt,William Shakespear,0,None,TreeSet())
  	val hamlet = Document(
  		101,
  		"Hamlet.txt",
