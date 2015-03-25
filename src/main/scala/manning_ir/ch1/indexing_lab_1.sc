@@ -11,8 +11,9 @@ object Indexing_lab_1 {
 		val title: String,
 		val author: String,
 		val path: String,
-		val tokensTotal: Option[Int] = None,
-		val tokensUnique: Option[Int] = None
+		var tokensTotal: Long = 0,
+		var tokensUniqueSize: Option[Int] = None,
+		var tokensUnique: SortedSet[String] = SortedSet.empty[String]
 	)
 	
 	val dictionary = Map.empty[String, SortedSet[Int]]
@@ -30,23 +31,30 @@ object Indexing_lab_1 {
 		"src/main/resources/shakespeare/Antony_and_Cleopatra.txt"
  	)                                         //> antAndCleo  : manning_ir.ch1.Indexing_lab_1.Document = Document(100,Antony a
                                                   //| nd Cleopatra,William Shakespear,src/main/resources/shakespeare/Antony_and_Cl
-                                                  //| eopatra.txt,None,None)
+                                                  //| eopatra.txt,0,None,TreeSet())
   // -------------------------------------- //
   
 	for (line <- Source.fromFile(root_path + antAndCleo.path).getLines) {
 		val tokens = line.split("[ !,.]+") //("\\s+") // split on any number of contiguous space characters
+		antAndCleo.tokensTotal += tokens.length
 		
 		tokens.map(term => dictionary.get(term) match {
-			case Some(posting) => posting += antAndCleo.id
+			case Some(posting) => {
+				posting += antAndCleo.id
+				antAndCleo.tokensUnique += term
+			}
 	  		case None => {
 	  			val posting = SortedSet.empty[Int]
 	  			posting += antAndCleo.id
 	  			dictionary += (term -> posting)
+	  			antAndCleo.tokensUnique += term
 	  		}
 		})
-	}
+	} // end for line
 	
 	dictionary.keys.size                      //> res0: Int = 5351
+	antAndCleo.tokensUnique.size              //> res1: Int = 5351
+	antAndCleo.tokensTotal                    //> res2: Long = 27140
 }
 /*
 
