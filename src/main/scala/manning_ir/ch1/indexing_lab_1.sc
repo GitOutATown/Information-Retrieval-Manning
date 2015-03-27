@@ -63,7 +63,7 @@ object Indexing_lab_1 {
   
   // Query combiners AND, OR, NOT
 	
-	// Conjunction, i.e. AND, recursive
+	// Conjunction, i.e. AND, recursive merging
 	def andFilter(xs0: List[List[Long]]): List[Long] = {
 		xs0 match {
 			case Nil => Nil
@@ -82,7 +82,7 @@ object Indexing_lab_1 {
 	def notFilter(andOrPostings: List[Long], notPostings: List[Long]): List[Long] = {
 		andOrPostings.filter(!notPostings.contains(_))
 	}                                         //> notFilter: (andOrPostings: List[Long], notPostings: List[Long])List[Long]
-	
+
 	// Query implementation of AND, OR, and NOT uses List params for each.
 	def query(
 		andTerms: Option[List[String]],
