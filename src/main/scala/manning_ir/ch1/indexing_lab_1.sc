@@ -88,7 +88,7 @@ object Indexing_lab_1 {
 		andTerms: Option[List[String]],
 		orTerms: Option[List[String]],
 		notTerms: Option[List[String]]): List[Long] = {
-		
+		 
 		// AND
 		val andPostings = andTerms match {
 			case Some(terms) => terms.map(dictionary.get(_).get.toList)
