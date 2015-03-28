@@ -40,7 +40,7 @@ object Indexing_lab_1 {
                                                   //| Manning/
   val doc_path = "src/main/resources/shakespeare/"//> doc_path  : String = src/main/resources/shakespeare/
 	
-	// Inverse index model: dictionary and postings. Postings are boolean occurance of term.
+	// Inverse index model: dictionary of term postings. Postings are boolean occurance of term within a document.
   def indexDocument(doc: Document) {
   		for (line <- Source.fromFile(root_path + doc_path + doc.name).getLines) {
 			val tokens = line.split("[ !,.:;]+") //("\\s+") // split on any number of contiguous space characters
@@ -124,7 +124,7 @@ object Indexing_lab_1 {
   
   object IDGenerator {
 	  private val n = new java.util.concurrent.atomic.AtomicLong(100L)
-	  def next = n.getAndIncrement()
+	  def next = n.getAndIncrement
 	}
 	
 	val docList = List[Document](
