@@ -46,7 +46,6 @@ object PhrasalSearch_lab_2 {
   val doc_path = "src/main/resources/shakespeare/"//> doc_path  : String = src/main/resources/shakespeare/
   
   	// Inverse index model: dictionary of term postings.
-  	// TermIncidences are count and location of all occurances of a term within a document.
   def indexDocument(doc: Document) {
   		val tokenLocation = 0 // token location initialization for document
   		Source.fromFile(root_path + doc_path + doc.name)
@@ -54,10 +53,11 @@ object PhrasalSearch_lab_2 {
   		.foldLeft(tokenLocation){ // immediate prededecessor token location
 	  		(tokenLocation, token) => {
 	  			val tokLocIncr = tokenLocation + 1 // increment token location
+	  			doc.tokensTotal += 1
 	  			dictionary.get(token) match { // retrieving term from dictionary
 					case Some(postings) => {
 						postings.incidences.get(doc.id).get.locs += tokLocIncr // record location of this instance
-						postings.termFrequency = postings.termFrequency + 1 // TODO: I don't like this constant mutation. Better to tally all at once at the end.
+						postings.termFrequency += 1 // TODO: I don't like this constant mutation. Better to tally all at once at the end.
 						doc.tokensUnique += token // This doesn't seem necessary, but what the hell...
 					} // end Some
 					case None => { // term does not exist in dictionary, create it
@@ -90,10 +90,20 @@ object PhrasalSearch_lab_2 {
   
   // Initiate indexing
   docList foreach indexDocument
-  
-  // ----------------------------------- //
-  
-  0                                               //> res0: Int(0) = 0
+    
+  	// ------ Logging ndexing results ------ //
+	
+	dictionary.keys.size                      //> res0: Int = 4775
+	
+	docList foreach(doc => {
+		println("------------------")
+		println(doc.name)
+		println("Unique terms: " + doc.tokensUnique.size)
+		println("Word count: " + doc.tokensTotal)
+	})                                        //> ------------------
+                                                  //| Antony_and_Cleopatra.txt
+                                                  //| Unique terms: 4775
+                                                  //| Word count: 27137
 }
 /*
 
