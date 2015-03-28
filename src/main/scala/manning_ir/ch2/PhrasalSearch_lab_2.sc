@@ -3,7 +3,7 @@ package manning_ir.ch2
 import scala.io.Source
 import scala.collection.mutable.Map
 import scala.collection.mutable.SortedSet
-
+ 
 /**
  * Exercise in phrasal search. Not using POS or stop words.
  * Includes Ranking.
@@ -51,7 +51,7 @@ object PhrasalSearch_lab_2 {
                                                   //> root_path  : String = /Users/hieronymus/Development/Workspace_BAK/Intro IR 
                                                   //| Manning/
   val doc_path = "src/main/resources/shakespeare/"//> doc_path  : String = src/main/resources/shakespeare/
-  
+ 
   	// Inverse index model: dictionary of term postings.
   def indexDocument(doc: Document) {
   		val tokenLocation = 0 // token location initialization for document
