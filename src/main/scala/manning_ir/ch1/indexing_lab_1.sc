@@ -88,11 +88,16 @@ object Indexing_lab_1 {
 		andTerms: Option[List[String]],
 		orTerms: Option[List[String]],
 		notTerms: Option[List[String]]): List[Long] = {
-		 
+				 
 		// AND
 		val andPostings = andTerms match {
-			case Some(terms) => terms.map(dictionary.get(_).get.toList)
-			case None => List.empty[List[Long]]
+			case Some(terms) => {
+				terms.map(dictionary.get(_)).map(_ match {
+					case Some(docIds) => docIds.toList
+					case None => Nil
+				})
+			}
+			case None => Nil
 		}
 		val andResult = andFilter(andPostings)
 		println("andPostings: " + andPostings)
@@ -100,8 +105,13 @@ object Indexing_lab_1 {
 				
 		// OR
 		val orPostings = orTerms match {
-			case Some(terms) => terms.flatMap(dictionary.get(_).get)
-			case None => List.empty[Long]
+			case Some(terms) => {
+				terms.map(dictionary.get(_)).flatMap(_ match {
+					case Some(docIds) => docIds.toList
+					case None => Nil
+				})
+			}
+			case None => Nil
 		}
 		val andOrResult = combAndOr(andResult, orPostings)
 		println("orPostings: " + orPostings)
@@ -187,6 +197,7 @@ object Indexing_lab_1 {
   
   dictionary.get("Antony")                        //> res1: Option[scala.collection.mutable.SortedSet[Long]] = Some(TreeSet(100, 
                                                   //| 102))
+  
 	dictionary.get("Brutus")                  //> res2: Option[scala.collection.mutable.SortedSet[Long]] = Some(TreeSet(100, 
                                                   //| 101, 102))
 	dictionary.get("Caesar")                  //> res3: Option[scala.collection.mutable.SortedSet[Long]] = Some(TreeSet(100, 
@@ -202,6 +213,8 @@ object Indexing_lab_1 {
 	dictionary.get("Othello")                 //> res8: Option[scala.collection.mutable.SortedSet[Long]] = Some(TreeSet(104))
                                                   //| 
 	
+	dictionary.get("Beatles")                 //> res9: Option[scala.collection.mutable.SortedSet[Long]] = None
+	
 	// Initiate combined queries
 	
 	// ((Caesar AND Brutus) OR Othello) NOT Calpurnia
@@ -215,8 +228,8 @@ object Indexing_lab_1 {
                                                   //| andOrResult: List(100, 101, 102, 104)
                                                   //| notPostings: List(102)
                                                   //| notResult: List(100, 101, 104)
-                                                  //| res9: List[String] = List(Antony_and_Cleopatra.txt, Hamlet.txt, Othello.txt
-                                                  //| )
+                                                  //| res10: List[String] = List(Antony_and_Cleopatra.txt, Hamlet.txt, Othello.tx
+                                                  //| t)
 	
   // (Caesar OR Brutus) NOT Calpurnia
   query(
@@ -229,8 +242,9 @@ object Indexing_lab_1 {
                                                   //| andOrResult: List(100, 101, 102, 103, 104)
                                                   //| notPostings: List(102)
                                                   //| notResult: List(100, 101, 103, 104)
-                                                  //| res10: List[String] = List(Antony_and_Cleopatra.txt, Hamlet.txt, Macbeth.tx
+                                                  //| res11: List[String] = List(Antony_and_Cleopatra.txt, Hamlet.txt, Macbeth.tx
                                                   //| t, Othello.txt)
+  	
   // (Caesar AND Brutus) NOT Calpurnia
   	query(
   		Option(List("Caesar", "Brutus")),
@@ -242,7 +256,7 @@ object Indexing_lab_1 {
                                                   //| andOrResult: List(100, 101, 102)
                                                   //| notPostings: List(102)
                                                   //| notResult: List(100, 101)
-                                                  //| res11: List[String] = List(Antony_and_Cleopatra.txt, Hamlet.txt)
+                                                  //| res12: List[String] = List(Antony_and_Cleopatra.txt, Hamlet.txt)
   // (Caesar AND Brutus) OR Othello
   query(
   		Option(List("Caesar", "Brutus")),
@@ -254,8 +268,38 @@ object Indexing_lab_1 {
                                                   //| andOrResult: List(100, 101, 102, 104)
                                                   //| notPostings: List()
                                                   //| notResult: List(100, 101, 102, 104)
-                                                  //| res12: List[String] = List(Antony_and_Cleopatra.txt, Hamlet.txt, Julius_Cae
+                                                  //| res13: List[String] = List(Antony_and_Cleopatra.txt, Hamlet.txt, Julius_Cae
                                                   //| sar.txt, Othello.txt)
+  
+  // Empty result
+  query(
+	  Option(List("Elvis")),
+	  None,
+	  None
+  ).map(docCatalog.get(_).get.name)               //> andPostings: List(List())
+                                                  //| andResult: List()
+                                                  //| orPostings: List()
+                                                  //| andOrResult: List()
+                                                  //| notPostings: List()
+                                                  //| notResult: List()
+                                                  //| res14: List[String] = List()
+  
+  // Empty result
+  query(
+  		None,
+	  Option(List("Elvis")),
+	  None
+  ).map(docCatalog.get(_).get.name)               //> andPostings: List()
+                                                  //| andResult: List()
+                                                  //| orPostings: List()
+                                                  //| andOrResult: List()
+                                                  //| notPostings: List()
+                                                  //| notResult: List()
+                                                  //| res15: List[String] = List()
+  
+  
+  
+  
 }
 /*
 

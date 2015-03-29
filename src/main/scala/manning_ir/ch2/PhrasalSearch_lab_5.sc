@@ -8,6 +8,7 @@ import scala.collection.mutable.SortedSet
 
 /**
  * Exercise in phrasal search. Not using POS or stop words.
+ * Haven't yet been lowercasing, but I think it's time.
  * Includes Ranking.
  * Some open questions:
  * * Whether to use a sliding window strategy (on the query
@@ -54,7 +55,7 @@ object PhrasalSearch_lab_5 {
  
   	// ------ Logging indexing results ------ //
 	
-	dictionary.keys.size                      //> res0: Int = 13743
+	dictionary.keys.size                      //> res0: Int = 12113
 	
 	docList foreach(doc => {
 		println("------------------")
@@ -63,28 +64,39 @@ object PhrasalSearch_lab_5 {
 		println("Word count: " + doc.tokensTotal)
 	})                                        //> ------------------
                                                   //| Antony_and_Cleopatra.txt
-                                                  //| Unique terms: 4775
+                                                  //| Unique terms: 4218
                                                   //| Word count: 27137
                                                   //| ------------------
                                                   //| Hamlet.txt
-                                                  //| Unique terms: 5658
+                                                  //| Unique terms: 5142
                                                   //| Word count: 32320
                                                   //| ------------------
                                                   //| Julius_Caesar.txt
-                                                  //| Unique terms: 3551
+                                                  //| Unique terms: 3123
                                                   //| Word count: 20928
                                                   //| ------------------
                                                   //| Macbeth.txt
-                                                  //| Unique terms: 4031
+                                                  //| Unique terms: 3596
                                                   //| Word count: 18314
                                                   //| ------------------
                                                   //| Othello.txt
-                                                  //| Unique terms: 4613
+                                                  //| Unique terms: 4164
                                                   //| Word count: 28026
                                                   //| ------------------
                                                   //| The_Tempest.txt
-                                                  //| Unique terms: 3809
+                                                  //| Unique terms: 3423
                                                   //| Word count: 17468
+	// ----- Phrasal Querying ------------//
+	
+	def phrasalQuery(query: String) {
+		// tokenize query
+		val qTerms = preprocess(query)
+		qTerms foreach println
+	}                                         //> phrasalQuery: (query: String)Unit
+	
+	phrasalQuery("And, in conclusion")        //> and
+                                                  //| in
+                                                  //| conclusion
 }
 /*
 

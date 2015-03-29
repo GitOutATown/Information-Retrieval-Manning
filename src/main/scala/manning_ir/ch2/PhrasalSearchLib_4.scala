@@ -34,18 +34,23 @@ object PhrasalSearchLib_4 {
 	
 	// Document catalog. Mutable (side effect)
 	val docCatalog = Map.empty[Long, Document]
+	
+	def preprocess(str: String): Array[String] = {
+	  str.split("[ !,.:;]+").map(_.toLowerCase)
+	}
  
   	// Inverse index model: dictionary of term postings.
 	def indexDocument(path: String)(doc: Document) {
   		val tokenLocation = 0 // token location initialization for document
   		Source.fromFile(path + doc.name)
-  		.getLines.flatMap(_.split("[ !,.:;]+")) // bypass lines to direct mapping of tokens
+  		.getLines.flatMap(preprocess(_)) // bypass lines to direct mapping of tokens
   		.foldLeft(tokenLocation){ // location of immediate prededecessor
 	  		(tokenLocation, token) => {
+	  			val tokenLowerCase = token.toLowerCase
 	  			val tokLocIncr = tokenLocation + 1 // increment token location
 	  			doc.tokensTotal += 1
 	  			// record location of this instance
-	  			dictionary.get(token) match {
+	  			dictionary.get(tokenLowerCase) match {
 					case Some(term) => { // retrieving term from dictionary
 						val incidences = term.incidences.get(doc.id) match {
 							case Some(incidences) => {
@@ -55,12 +60,12 @@ object PhrasalSearchLib_4 {
 							case None => Incidences(doc.id, 1, SortedSet(tokLocIncr)) // 1 is the first count
 						}
 						term.termFrequency += 1 // TODO: I don't like this constant mutation. Better to tally all at once at the end.
-						doc.tokensUnique += token // This doesn't seem necessary, but what the hell...
+						doc.tokensUnique += tokenLowerCase // This doesn't seem necessary, but what the hell...
 					}
 					case None => { // term does not exist in dictionary, create it
 						val incidences = Incidences(doc.id, 1, SortedSet(tokLocIncr)) // 1 is the first count
-						val term = Term(token, 1, Map[Long, Incidences](doc.id -> incidences))
-						dictionary += (token -> term)
+						val term = Term(tokenLowerCase, 1, Map[Long, Incidences](doc.id -> incidences))
+						dictionary += (tokenLowerCase -> term)
 						doc.tokensUnique += token
 					}
 				} // end match
