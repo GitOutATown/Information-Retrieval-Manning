@@ -18,7 +18,8 @@ object PhrasalSearchLib_4 {
 	// Count and locations of all instances of a term (type) within a document
 	case class Incidences(
 		val docId: Long,
-		var count: Long, // number of instances of term in document
+		val term: String,
+		var docFreq: Long, // number of instances of term in document
 		val locs: SortedSet[Long] // location of each instance of the term in this document
 	)
 	
@@ -46,26 +47,27 @@ object PhrasalSearchLib_4 {
   		.getLines.flatMap(preprocess(_)) // bypass lines to direct mapping of tokens
   		.foldLeft(tokenLocation){ // location of immediate prededecessor
 	  		(tokenLocation, token) => {
-	  			val tokenLowerCase = token.toLowerCase
+	  			val tokLowCase = token.toLowerCase
 	  			val tokLocIncr = tokenLocation + 1 // increment token location
 	  			doc.tokensTotal += 1
-	  			// record location of this instance
-	  			dictionary.get(tokenLowerCase) match {
+	  			// record location of this instance, uses side effects
+	  			dictionary.get(tokLowCase) match {
 					case Some(term) => { // retrieving term from dictionary
 						val incidences = term.incidences.get(doc.id) match {
 							case Some(incidences) => {
 								incidences.locs += tokLocIncr
+								incidences.docFreq += 1
 								incidences
 							}
-							case None => Incidences(doc.id, 1, SortedSet(tokLocIncr)) // 1 is the first count
+							case None => Incidences(doc.id, tokLowCase, 1, SortedSet(tokLocIncr)) // 1 is the first count
 						}
 						term.termFrequency += 1 // TODO: I don't like this constant mutation. Better to tally all at once at the end.
-						doc.tokensUnique += tokenLowerCase // This doesn't seem necessary, but what the hell...
+						doc.tokensUnique += tokLowCase // This doesn't seem necessary, but what the hell...
 					}
 					case None => { // term does not exist in dictionary, create it
-						val incidences = Incidences(doc.id, 1, SortedSet(tokLocIncr)) // 1 is the first count
-						val term = Term(tokenLowerCase, 1, Map[Long, Incidences](doc.id -> incidences))
-						dictionary += (tokenLowerCase -> term)
+						val incidences = Incidences(doc.id, tokLowCase, 1, SortedSet(tokLocIncr)) // 1 is the first count
+						val term = Term(tokLowCase, 1, Map[Long, Incidences](doc.id -> incidences))
+						dictionary += (tokLowCase -> term)
 						doc.tokensUnique += token
 					}
 				} // end match

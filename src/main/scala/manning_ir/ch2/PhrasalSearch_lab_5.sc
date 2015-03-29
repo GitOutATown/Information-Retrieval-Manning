@@ -9,7 +9,7 @@ import scala.collection.mutable.SortedSet
 /**
  * Exercise in phrasal search. Not using POS or stop words.
  * Haven't yet been lowercasing, but I think it's time.
- * Includes Ranking.
+ * Includes Ranking (an attempt at tf-idf)
  * Some open questions:
  * * Whether to use a sliding window strategy (on the query
  * * Basis for ranking
@@ -92,6 +92,20 @@ object PhrasalSearch_lab_5 {
 		// tokenize query
 		val qTerms = preprocess(query)
 		qTerms foreach println
+		
+		// OR-like, initial step
+		/*
+		val orPostings = qTerms match {
+			case Some(terms) => {
+				terms.map(dictionary.get(_)).flatMap(_ match {
+					case Some(docIds) => docIds.toList
+					case None => Nil
+				})
+			}
+			case None => Nil
+		}
+		*/
+		
 	}                                         //> phrasalQuery: (query: String)Unit
 	
 	phrasalQuery("And, in conclusion")        //> and
