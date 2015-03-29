@@ -119,8 +119,13 @@ object Indexing_lab_1 {
 		
 		// NOT
 		val notPostings = notTerms match {
-			case Some(terms) => terms.flatMap(dictionary.get(_).get)
-			case None => List.empty[Long]
+			case Some(terms) => {
+				terms.map(dictionary.get(_)).flatMap(_ match {
+					case Some(docIds) => docIds.toList
+					case None => Nil
+				})
+			}
+			case None => Nil
 		}
 		val andOrNotResult = notFilter(andOrResult, notPostings)
 		println("notPostings: " + notPostings)
@@ -273,6 +278,19 @@ object Indexing_lab_1 {
   
   // Empty result
   query(
+	  Option(List("Caesar", "Elvis")),
+	  None,
+	  None
+  ).map(docCatalog.get(_).get.name)               //> andPostings: List(List(100, 101, 102, 103, 104), List())
+                                                  //| andResult: List()
+                                                  //| orPostings: List()
+                                                  //| andOrResult: List()
+                                                  //| notPostings: List()
+                                                  //| notResult: List()
+                                                  //| res14: List[String] = List()
+  
+  // Empty result
+  query(
 	  Option(List("Elvis")),
 	  None,
 	  None
@@ -282,7 +300,7 @@ object Indexing_lab_1 {
                                                   //| andOrResult: List()
                                                   //| notPostings: List()
                                                   //| notResult: List()
-                                                  //| res14: List[String] = List()
+                                                  //| res15: List[String] = List()
   
   // Empty result
   query(
@@ -295,7 +313,44 @@ object Indexing_lab_1 {
                                                   //| andOrResult: List()
                                                   //| notPostings: List()
                                                   //| notResult: List()
-                                                  //| res15: List[String] = List()
+                                                  //| res16: List[String] = List()
+  // Non-empty result
+  query(
+  		None,
+	  Option(List("Elvis", "Caesar")),
+	  None
+  ).map(docCatalog.get(_).get.name)               //> andPostings: List()
+                                                  //| andResult: List()
+                                                  //| orPostings: List(100, 101, 102, 103, 104)
+                                                  //| andOrResult: List(100, 101, 102, 103, 104)
+                                                  //| notPostings: List()
+                                                  //| notResult: List(100, 101, 102, 103, 104)
+                                                  //| res17: List[String] = List(Antony_and_Cleopatra.txt, Hamlet.txt, Julius_Cae
+                                                  //| sar.txt, Macbeth.txt, Othello.txt)
+  // Empty result
+  query(
+  		None,
+	  None,
+	  Option(List("Elvis"))
+  ).map(docCatalog.get(_).get.name)               //> andPostings: List()
+                                                  //| andResult: List()
+                                                  //| orPostings: List()
+                                                  //| andOrResult: List()
+                                                  //| notPostings: List()
+                                                  //| notResult: List()
+                                                  //| res18: List[String] = List()
+  // Empty result
+  query(
+  		None,
+	  None,
+	  None
+  ).map(docCatalog.get(_).get.name)               //> andPostings: List()
+                                                  //| andResult: List()
+                                                  //| orPostings: List()
+                                                  //| andOrResult: List()
+                                                  //| notPostings: List()
+                                                  //| notResult: List()
+                                                  //| res19: List[String] = List()
   
   
   
