@@ -27,7 +27,7 @@ object PhrasalSearchLib_4 {
 	case class Term(
 		val term: String, // unique token (type, word)
 		var termFrequency: Long, // total number of times this term appears in the corpus
-		val incidences: Map[Long, Incidences] // key is docId, Incidences are the locations of the term per each document
+		val incidences: Map[Long, Incidences]
 	)
 	
 	// Term lookup. Mutable (side effect)
@@ -59,9 +59,12 @@ object PhrasalSearchLib_4 {
 								incidences.docFreq += 1
 								incidences
 							}
-							case None => Incidences(doc.id, tokLowCase, 1, SortedSet(tokLocIncr)) // 1 is the first count
+							case None => {
+								Incidences(doc.id, tokLowCase, 1, SortedSet(tokLocIncr))
+							} // 1 is the first count
 						}
 						term.termFrequency += 1 // TODO: I don't like this constant mutation. Better to tally all at once at the end.
+						term.incidences += (doc.id -> incidences)
 						doc.tokensUnique += tokLowCase // This doesn't seem necessary, but what the hell...
 					}
 					case None => { // term does not exist in dictionary, create it

@@ -91,29 +91,37 @@ object PhrasalSearch_lab_5 {
 	def phrasalQuery(query: String) {
 		// tokenize query
 		val qTerms = preprocess(query)
-		qTerms foreach println
 		
-		// OR-like, initial step
-		/*
-		val orPostings = qTerms match {
-			case Some(terms) => {
-				terms.map(dictionary.get(_)).flatMap(_ match {
-					case Some(docIds) => docIds.toList
-					case None => Nil
-				})
-			}
-			case None => Nil
-		}
-		*/
+		// Disjunction of query terms, initial step
+		val termsRetrieved = qTerms.map(qTerm => dictionary.get(qTerm))
+		
+		// ----- Diagnostic logging ------- //
+		qTerms foreach println
+		println("---------------------")
+		termsRetrieved foreach(term => term match {
+			case Some(term) => println(
+				"Found \"" + term.term + "\" in dictionary" +
+				"with " + term.incidences.size + " documents"
+			)
+			case None => // result None for query term
+		})
+
+		
 		
 	}                                         //> phrasalQuery: (query: String)Unit
 	
-	phrasalQuery("And, in conclusion")        //> and
+	phrasalQuery("And, in conclusion. Elvis") //> and
                                                   //| in
                                                   //| conclusion
+                                                  //| elvis
+                                                  //| ---------------------
+                                                  //| Found "and" in dictionarywith 6 documents
+                                                  //| Found "in" in dictionarywith 6 documents
+                                                  //| Found "conclusion" in dictionarywith 3 documents
+	
 }
 /*
 
-
+ 
 
 */
