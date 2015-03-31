@@ -7,7 +7,7 @@ import scala.io.Source
 import scala.collection.mutable.Map
 import scala.collection.mutable.SortedSet
 import scala.math.log10
-
+ 
 /**
  * Exercise in phrasal search. Not using POS or stop words.
  * Doing lowercasing of index and query.
@@ -134,7 +134,7 @@ object PhrasalSearch_lab_7 {
 		
 	} // end phrasalQuery                     //> phrasalQuery: (query: String)List[List[manning_ir.ch2.PhrasalSearch_lab_7.Q
                                                   //| ueryResult]]
-
+ 
 	
 	val queryResults = phrasalQuery("And, in conclusion, Elvis")
                                                   //> and
