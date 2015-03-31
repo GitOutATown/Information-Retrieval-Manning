@@ -10,11 +10,11 @@ import scala.math.log10
 
 /**
  * Exercise in phrasal search. Not using POS or stop words.
- * Haven't yet been lowercasing, but I think it's time.
+ * Doing lowercasing of index and query.
  * Using Term Frequency for ranking. Not using IDF because collection is too small.
  * Some open questions:
- * * Whether to use a sliding window strategy (on the query
- * * Basis for ranking
+ * * Whether to use a sliding window strategy (on the phrase query)
+ * * Basis for phrase retreival ranking
  * * Whether to use a proximity parameter on biword pairs (affects ranking)
  * * How to account for repeat terms in query
  */
@@ -96,11 +96,13 @@ object PhrasalSearch_lab_6 {
 		val queryTerm: String,
 		val rankMetric: Double
 	)
+	object QueryOrdering extends Ordering[QueryResult] {
+		def compare(a: QueryResult, b: QueryResult) = a.rankMetric compare b.rankMetric
+	}
 	
 	val round = roundAt(4)_                   //> round  : Double => Double = <function1>
 	
-	/* TODO NEXT:
-	 *   Sort QueryResults by ranking (tf).
+	/* TODO : Sort QueryResults by ranking (tf).
 	 */
 	def phrasalQuery(query: String): List[List[QueryResult]] = {
 		// tokenize query
@@ -115,8 +117,8 @@ object PhrasalSearch_lab_6 {
 			term.incidences.values.map( incidences => {
 				val docWordCount = docCatalog.get(incidences.docId).get.tokensTotal
 				val tf = round(incidences.termCount.toDouble / docWordCount.toDouble)
-				QueryResult(incidences.docId, incidences.term, tf) // TODO: implement Ordered
-			}).toList
+				QueryResult(incidences.docId, incidences.term, tf)
+			}).toList.sorted(QueryOrdering)
 		}).toList
 	} // end phrasalQuery                     //> phrasalQuery: (query: String)List[List[manning_ir.ch2.PhrasalSearch_lab_6.Q
                                                   //| ueryResult]]
@@ -129,13 +131,37 @@ object PhrasalSearch_lab_6 {
                                                   //| elvis
                                                   //| ---------------------
                                                   //| queryResults  : List[List[manning_ir.ch2.PhrasalSearch_lab_6.QueryResult]] 
-                                                  //| = List(List(QueryResult(101,and,0.0298), QueryResult(104,and,0.0282), Query
-                                                  //| Result(100,and,0.0247), QueryResult(103,and,0.0309), QueryResult(105,and,0.
-                                                  //| 0294), QueryResult(102,and,0.0304)), List(QueryResult(101,in,0.0135), Query
-                                                  //| Result(104,in,0.0119), QueryResult(100,in,0.0097), QueryResult(103,in,0.011
-                                                  //| 2), QueryResult(105,in,0.0092), QueryResult(102,in,0.0108)), List(QueryResu
-                                                  //| lt(104,conclusion,1.0E-4), QueryResult(100,conclusion,0.0), QueryResult(103
+                                                  //| = List(List(QueryResult(100,and,0.0247), QueryResult(104,and,0.0282), Query
+                                                  //| Result(105,and,0.0294), QueryResult(101,and,0.0298), QueryResult(102,and,0.
+                                                  //| 0304), QueryResult(103,and,0.0309)), List(QueryResult(105,in,0.0092), Query
+                                                  //| Result(100,in,0.0097), QueryResult(102,in,0.0108), QueryResult(103,in,0.011
+                                                  //| 2), QueryResult(104,in,0.0119), QueryResult(101,in,0.0135)), List(QueryResu
+                                                  //| lt(100,conclusion,0.0), QueryResult(104,conclusion,1.0E-4), QueryResult(103
                                                   //| ,conclusion,1.0E-4)))
+	
+	queryResults foreach(
+		queryResults => {
+			println("----------------------------------")
+			queryResults foreach println
+		}
+	)                                         //> ----------------------------------
+                                                  //| QueryResult(100,and,0.0247)
+                                                  //| QueryResult(104,and,0.0282)
+                                                  //| QueryResult(105,and,0.0294)
+                                                  //| QueryResult(101,and,0.0298)
+                                                  //| QueryResult(102,and,0.0304)
+                                                  //| QueryResult(103,and,0.0309)
+                                                  //| ----------------------------------
+                                                  //| QueryResult(105,in,0.0092)
+                                                  //| QueryResult(100,in,0.0097)
+                                                  //| QueryResult(102,in,0.0108)
+                                                  //| QueryResult(103,in,0.0112)
+                                                  //| QueryResult(104,in,0.0119)
+                                                  //| QueryResult(101,in,0.0135)
+                                                  //| ----------------------------------
+                                                  //| QueryResult(100,conclusion,0.0)
+                                                  //| QueryResult(104,conclusion,1.0E-4)
+                                                  //| QueryResult(103,conclusion,1.0E-4)
 }
 /*
 
