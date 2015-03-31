@@ -19,14 +19,14 @@ object PhrasalSearchLib_4 {
 	case class Incidences(
 		val docId: Long,
 		val term: String,
-		var docFreq: Long, // number of instances of term in document
+		var termCount: Long, // number of instances of term in document
 		val locs: SortedSet[Long] // location of each instance of the term in this document
 	)
 	
 	// Term specific data within a collection or corpus
 	case class Term(
 		val term: String, // unique token (type, word)
-		var termFrequency: Long, // total number of times this term appears in the corpus
+		var termCount: Long, // total number of times this term appears in the corpus
 		val incidences: Map[Long, Incidences]
 	)
 	
@@ -56,14 +56,12 @@ object PhrasalSearchLib_4 {
 						val incidences = term.incidences.get(doc.id) match {
 							case Some(incidences) => {
 								incidences.locs += tokLocIncr
-								incidences.docFreq += 1
+								incidences.termCount += 1
 								incidences
 							}
-							case None => {
-								Incidences(doc.id, tokLowCase, 1, SortedSet(tokLocIncr))
-							} // 1 is the first count
+							case None => Incidences(doc.id, tokLowCase, 1, SortedSet(tokLocIncr)) // 1 is the first count
 						}
-						term.termFrequency += 1 // TODO: I don't like this constant mutation. Better to tally all at once at the end.
+						term.termCount += 1 // TODO: Would it be better to tally all at once at the end?
 						term.incidences += (doc.id -> incidences)
 						doc.tokensUnique += tokLowCase // This doesn't seem necessary, but what the hell...
 					}

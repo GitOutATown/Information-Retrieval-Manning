@@ -1,6 +1,7 @@
 package manning_ir.ch2
 
 import manning_ir.ch2.PhrasalSearchLib_4._
+import util.math.Rounding_lab_1._
 
 import scala.io.Source
 import scala.collection.mutable.Map
@@ -9,7 +10,7 @@ import scala.collection.mutable.SortedSet
 /**
  * Exercise in phrasal search. Not using POS or stop words.
  * Haven't yet been lowercasing, but I think it's time.
- * Includes Ranking (an attempt at tf-idf)
+ * Includes Ranking (tf-idf)
  * Some open questions:
  * * Whether to use a sliding window strategy (on the query
  * * Basis for ranking
@@ -86,6 +87,7 @@ object PhrasalSearch_lab_5 {
                                                   //| The_Tempest.txt
                                                   //| Unique terms: 3423
                                                   //| Word count: 17468
+  
 	// ----- Phrasal Querying ------------//
 	
 	def phrasalQuery(query: String) {
@@ -96,18 +98,31 @@ object PhrasalSearch_lab_5 {
 		val termsRetrieved = qTerms.map(qTerm => dictionary.get(qTerm))
 		
 		// ----- Diagnostic logging ------- //
+		
+		val round = roundAt(4)_
+		
 		qTerms foreach println
 		println("---------------------")
 		termsRetrieved foreach(term => term match {
-			case Some(term) => println(
-				"Found \"" + term.term + "\" in dictionary" +
-				"with " + term.incidences.size + " documents"
-			)
+			case Some(term) => {
+				println(
+					"Found term \"" + term.term + "\" in collection" +
+					" with total count " + term.termCount +
+					" in " + term.incidences.size + " documents:"
+				)
+				term.incidences.values.foreach( incidences => {
+						val docTermCount = incidences.termCount
+						val docWordCount = docCatalog.get(incidences.docId).get.tokensTotal
+						println(
+							"Document " + incidences.docId + " term count is " + docTermCount +
+							" out of " + docWordCount + " total words" +
+							" for a TF of " + round(docTermCount.toDouble / docWordCount.toDouble)
+						)
+				})
+				println("---------------------")
+			}
 			case None => // result None for query term
 		})
-
-		
-		
 	}                                         //> phrasalQuery: (query: String)Unit
 	
 	phrasalQuery("And, in conclusion. Elvis") //> and
@@ -115,10 +130,20 @@ object PhrasalSearch_lab_5 {
                                                   //| conclusion
                                                   //| elvis
                                                   //| ---------------------
-                                                  //| Found "and" in dictionarywith 6 documents
-                                                  //| Found "in" in dictionarywith 6 documents
-                                                  //| Found "conclusion" in dictionarywith 3 documents
-	
+                                                  //| Found term "and" in collection with total count 4139 in 6 documents:
+                                                  //| Document 101 term count is 963 out of 32320 total words for a TF of 0.0298
+                                                  //| Document 104 term count is 791 out of 28026 total words for a TF of 0.0282
+                                                  //| Document 100 term count is 670 out of 27137 total words for a TF of 0.0247
+                                                  //| Document 103 term count is 565 out of 18314 total words for a TF of 0.0309
+                                                  //| Document 105 term count is 514 out of 17468 total words for a TF of 0.0294
+                                                  //| Document 102 term count is 636 out of 20928 total words for a TF of 0.0304
+                                                  //| ---------------------
+                                                  //| Found term "in" in collection with total count 1624 in 6 documents:
+                                                  //| Document 101 term count is 435 out of 32320 total words for a TF of 0.0135
+                                                  //| Document 104 term count is 333 out of 28026 total words for a TF of 0.0119
+                                                  //| Document 100 term count is 264 out of 27137 total words for a TF of 0.0097
+                                                  //| Document 103 term count is 205
+                                                  //| Output exceeds cutoff limit.
 }
 /*
 
