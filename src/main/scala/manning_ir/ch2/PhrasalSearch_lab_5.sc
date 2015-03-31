@@ -6,11 +6,12 @@ import util.math.Rounding_lab_1._
 import scala.io.Source
 import scala.collection.mutable.Map
 import scala.collection.mutable.SortedSet
+import scala.math.log10
 
 /**
  * Exercise in phrasal search. Not using POS or stop words.
  * Haven't yet been lowercasing, but I think it's time.
- * Includes Ranking (tf-idf)
+ * Using Term Frequency for ranking. Not using IDF because collection is too small.
  * Some open questions:
  * * Whether to use a sliding window strategy (on the query
  * * Basis for ranking
@@ -90,6 +91,10 @@ object PhrasalSearch_lab_5 {
   
 	// ----- Phrasal Querying ------------//
 	
+	/* TODO NEXT:
+	 *	   Encapsulate document ranking results (maybe just a tuple)
+	 *   Sort and print them.
+	 */
 	def phrasalQuery(query: String) {
 		// tokenize query
 		val qTerms = preprocess(query)
@@ -105,18 +110,23 @@ object PhrasalSearch_lab_5 {
 		println("---------------------")
 		termsRetrieved foreach(term => term match {
 			case Some(term) => {
+				// http://www.tfidf.com/
+				val termDocHits = term.incidences.size
+				val docCatSize = docCatalog.size
 				println(
-					"Found term \"" + term.term + "\" in collection" +
+					"Found term \"" + term.term + "\" in collection of size " + docCatSize +
 					" with total count " + term.termCount +
-					" in " + term.incidences.size + " documents:"
+					" in " + termDocHits + " docs:"
 				)
 				term.incidences.values.foreach( incidences => {
 						val docTermCount = incidences.termCount
 						val docWordCount = docCatalog.get(incidences.docId).get.tokensTotal
+						val tf = round(docTermCount.toDouble / docWordCount.toDouble)
 						println(
 							"Document " + incidences.docId + " term count is " + docTermCount +
-							" out of " + docWordCount + " total words" +
-							" for a TF of " + round(docTermCount.toDouble / docWordCount.toDouble)
+							" out of " + docWordCount + " total words for a TF of " + tf// +
+							//"\n  For " + termDocHits + " document hits IDF is " +
+							//log10((docCatSize.toDouble / termDocHits.toDouble) + 0.001)
 						)
 				})
 				println("---------------------")
@@ -130,7 +140,7 @@ object PhrasalSearch_lab_5 {
                                                   //| conclusion
                                                   //| elvis
                                                   //| ---------------------
-                                                  //| Found term "and" in collection with total count 4139 in 6 documents:
+                                                  //| Found term "and" in collection of size 6 with total count 4139 in 6 docs:
                                                   //| Document 101 term count is 963 out of 32320 total words for a TF of 0.0298
                                                   //| Document 104 term count is 791 out of 28026 total words for a TF of 0.0282
                                                   //| Document 100 term count is 670 out of 27137 total words for a TF of 0.0247
@@ -138,11 +148,11 @@ object PhrasalSearch_lab_5 {
                                                   //| Document 105 term count is 514 out of 17468 total words for a TF of 0.0294
                                                   //| Document 102 term count is 636 out of 20928 total words for a TF of 0.0304
                                                   //| ---------------------
-                                                  //| Found term "in" in collection with total count 1624 in 6 documents:
+                                                  //| Found term "in" in collection of size 6 with total count 1624 in 6 docs:
                                                   //| Document 101 term count is 435 out of 32320 total words for a TF of 0.0135
                                                   //| Document 104 term count is 333 out of 28026 total words for a TF of 0.0119
                                                   //| Document 100 term count is 264 out of 27137 total words for a TF of 0.0097
-                                                  //| Document 103 term count is 205
+                                                  //| Document 103 term co
                                                   //| Output exceeds cutoff limit.
 }
 /*
