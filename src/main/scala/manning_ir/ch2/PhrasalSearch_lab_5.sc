@@ -126,7 +126,7 @@ object PhrasalSearch_lab_5 {
 							"Document " + incidences.docId + " term count is " + docTermCount +
 							" out of " + docWordCount + " total words for a TF of " + tf// +
 							//"\n  For " + termDocHits + " document hits IDF is " +
-							//log10((docCatSize.toDouble / termDocHits.toDouble) + 0.001)
+							//log10((docCatSize.toDouble / termDocHits.toDouble))
 						)
 				})
 				println("---------------------")
