@@ -6,7 +6,7 @@ import scala.collection.mutable.SortedSet
 
 import util.math.Rounding_lab_1._
 
-object PhrasalSearchLib_8 {
+object PhrasalSearchLib_9 {
 
 	// Document specific data
 	case class Document(
@@ -32,10 +32,10 @@ object PhrasalSearchLib_8 {
 		val incidences: Map[Long, Incidences]
 	)
 	
+	// All incidences of a single term within one document
 	case class QueryResult(
-		val docId: Long,
-		val queryTerm: String,
-		val rankMetric: Double
+		val incidences: Incidences,
+		val rankMetric: Double // document frequency
 	)
 	object QueryOrdering extends Ordering[QueryResult] {
 		def compare(a: QueryResult, b: QueryResult) = a.rankMetric compare b.rankMetric
@@ -101,7 +101,6 @@ object PhrasalSearchLib_8 {
 	def freqRank(rankRounding: Int = 5)(query: String): List[List[QueryResult]] = {
 		// tokenize and lowercase query
 		val qTerms = preprocess(query)
-		qTerms foreach println; println("---------------------")
 		
 		// Disjunction of query terms, initial step
 		val termsRetrieved = qTerms.map(dictionary.get(_)).flatten
@@ -122,7 +121,7 @@ object PhrasalSearchLib_8 {
 				if docWordCount.isDefined
 			} yield {
 				val tf = roundAt(rankRounding)(termWordCount / docWordCount.get.toDouble)
-				QueryResult(incidences.docId, incidences.term, tf)
+				QueryResult(incidences, tf)
 			}
 		}.toList.sorted(QueryOrdering)
 		
