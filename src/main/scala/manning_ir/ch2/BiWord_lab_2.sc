@@ -12,30 +12,36 @@ object BiWord_lab_2 {
                                                   //| 127), List(2, 8, 23, 47, 60, 84, 101))
 	// --------------------------- //
 	
-	def biWords(terms: List[List[Int]]) {
+	def biWords(terms: List[List[Int]]): List[(Int, Int)] = {
+		def inter(terms: List[List[Int]]): List[(Int, Int)] = {
+			terms match {
+				case x :: Nil => Nil
+				case x :: xs => {
+					for{
+						left <- x
+						right = {
+							val hit = xs.head.indexOf(left + 1)
+							println("left:" + left + " hit:" + hit)
+							hit
+						}
+						if right > -1
+					} yield (left, xs.head(right))
+				}
+			} // end terms match
+		} // end inter
+		
+		inter(terms)
+		
+	} // end biWords                          //> biWords: (terms: List[List[Int]])List[(Int, Int)]
 	
-		terms match {
-			case x :: Nil =>
-			case x :: xs => {
-				val result = for{
-					left <- x
-					right = {
-						val hit = xs.head.indexOf(left + 1)
-						println("left:" + left + " hit:" + hit)
-						hit
-					}
-					if right > -1
-				} yield (left, xs.head(right))
-			}
-		} // end terms match
-	} // end biWords                          //> biWords: (terms: List[List[Int]])Unit
-	
-	biWords(terms)                            //> left:4 hit:-1
+	val res1 = biWords(terms)                 //> left:4 hit:-1
                                                   //| left:7 hit:0
                                                   //| left:23 hit:-1
                                                   //| left:27 hit:-1
                                                   //| left:58 hit:2
                                                   //| left:99 hit:-1
+                                                  //| res1  : List[(Int, Int)] = List((7,8), (58,59))
+	res1                                      //> res0: List[(Int, Int)] = List((7,8), (58,59))
 	
 	val result1 = for{
 		left <- term1
@@ -66,3 +72,11 @@ object BiWord_lab_2 {
                                                   //| left:127 hit:-1
                                                   //| result2  : List[(Int, Int)] = List((59,60))
 }
+/*
+
+
+
+
+
+
+*/
