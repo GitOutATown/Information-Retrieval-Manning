@@ -16,19 +16,19 @@ object BiWord_lab_2 {
 	
 		def inter(terms: List[List[Int]], accum: List[List[(Int, Int)]]): List[List[(Int, Int)]] = {
 			terms match {
-				case x :: Nil => accum
-				case x :: xs => {
+				case term :: Nil => accum
+				case term :: xs => {
 					val result = for{
-						left <- x
-						right = {
+						left <- term
+						rightIndex = {
 							val hit = xs.head.indexOf(left + 1)
 							println("left:" + left + " hit:" + hit)
 							hit
 						}
-						if right > -1
-					} yield (left, xs.head(right))
+						if rightIndex > -1
+					} yield (left, xs.head(rightIndex))
 					inter(xs, accum ++ List(result))
-				} // end case x :: xs
+				} // end case term :: xs
 			} // end terms match
 		} // end inter
 		

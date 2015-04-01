@@ -101,7 +101,8 @@ object PhrasalSearch_lab_9 {
                                                   //| conclusion, 103, 5.0E-5
                                                   //| conclusion, 104, 1.4E-4
   // Dependancy on preserved order of query in results
-  def rankBiWord(queryTermResults: List[List[QueryResult]]) {
+  // TODO: What about biword ranking?
+  def biWord(queryTermResults: List[List[QueryResult]]) {
   		for{
   			term <- queryTermResults // each individual term
   			doc <- term // each individual document
@@ -109,10 +110,10 @@ object PhrasalSearch_lab_9 {
   		} yield {
   		
   		}
-  }                                               //> rankBiWord: (queryTermResults: List[List[manning_ir.ch2.PhrasalSearchLib_9.
-                                                  //| QueryResult]])Unit
+  }                                               //> biWord: (queryTermResults: List[List[manning_ir.ch2.PhrasalSearchLib_9.Quer
+                                                  //| yResult]])Unit
   
-  rankBiWord(queryResults)
+  biWord(queryResults)
 }
 /*
 
