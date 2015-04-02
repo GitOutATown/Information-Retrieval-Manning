@@ -63,6 +63,7 @@ object PhrasalSearch_lab_12 extends App {
 	//val queryResults = queryFrequency	("pillar of the world")
 	val queryResults = queryFrequency	("our dungy earth alike")
 	//val queryResults = queryFrequency	("earth alike")
+	//val queryResults = queryFrequency	("And, in conclusion, Elvis")
 	
 	queryResults foreach(
 		queryResults => {

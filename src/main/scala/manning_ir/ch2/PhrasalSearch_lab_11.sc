@@ -111,6 +111,7 @@ object PhrasalSearch_lab_11 {
                                                   //| 77, 32011, 32044)),0.00
                                                   //| Output exceeds cutoff limit.
 	//val queryResults = queryFrequency	("earth alike")
+	//val queryResults = queryFrequency	("And, in conclusion, Elvis")
 	
 	queryResults foreach(
 		queryResults => {
