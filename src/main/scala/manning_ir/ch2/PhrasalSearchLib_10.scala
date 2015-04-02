@@ -110,14 +110,14 @@ object PhrasalSearchLib_10 {
 	def freqRank(rankRounding: Int = 5)(query: String): QueryTermResults = {
 		val qTerms = preprocess(query) // tokenize and lowercase query
 		// Disjunction of query terms, initial step
-		val termsRetrieved = qTerms.map(dictionary.get(_)).flatten
-		val rankedIncidences = termsRetrieved.map( termIn => { // iterate over each Term
-			val termIncidences = termIn.allIncidences.values.map(docLocations => { // iterate through all locations of this term in this document
+		val termsRetrieved = qTerms.map(dictionary.get(_)).flatten // flatten filters out None
+		val rankedIncidences = termsRetrieved.map( termIn => { // iterate each Term
+			val termIncidences = termIn.allIncidences.values.map(docLocations => { // iterate each document's set of locations for this term
 				val termWordCount = docLocations.termCount.toDouble // total count of term in this document
 				val docWordCount: Option[Long] = { // number of words in this document
 					docCatalog.get(docLocations.docId) match {
 						case Some(doc) => Some(doc.tokensTotal)
-						case None => Some(1) // TODO: This is vulnerable, None would cause exception at current tf calculation. Therfore changing to 1
+						case None => Some(1) // TODO: This is vulnerable, None would cause exception at current tf calculation. Needs some re-work; in the meantime changing to 1
 					}
 				}
 				val tf = roundAt(rankRounding)(termWordCount / docWordCount.get.toDouble)
