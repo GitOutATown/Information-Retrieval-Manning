@@ -90,25 +90,25 @@ object PhrasalSearch_lab_11 {
 	// ----- Phrasal Querying ------------//
 
 	val queryFrequency = freqRank(5)_ // set rank rounding
-                                                  //> queryFrequency  : String => List[scala.collection.immutable.Map[Long,mannin
-                                                  //| g_ir.ch2.PhrasalSearchLib_10.Incidences]] = <function1>
+                                                  //> queryFrequency  : String => manning_ir.ch2.PhrasalSearchLib_10.QueryTermRes
+                                                  //| ults = <function1>
 	//val queryResults = queryFrequency("Look, where they come")
 	//val queryResults = queryFrequency("Take but good note")
 	//val queryResults = queryFrequency	("pillar of the world")
 	val queryResults = queryFrequency	("our dungy earth alike")
-                                                  //> queryResults  : List[scala.collection.immutable.Map[Long,manning_ir.ch2.Phr
-                                                  //| asalSearchLib_10.Incidences]] = List(Map(101 -> Incidences(Locations(101,ou
-                                                  //| r,118,TreeSet(201, 244, 273, 555, 582, 674, 707, 715, 761, 838, 869, 875, 9
-                                                  //| 10, 1026, 1187, 1289, 1366, 1409, 1412, 1462, 1477, 1482, 1515, 1519, 1582,
-                                                  //|  1596, 1601, 1606, 1647, 1770, 2275, 2356, 2393, 2410, 2412, 2417, 3276, 33
-                                                  //| 00, 3547, 4906, 4913, 4924, 5180, 5188, 6767, 7958, 8037, 8044, 8126, 8206,
-                                                  //|  8244, 8299, 8351, 8400, 8403, 8587, 8612, 8624, 8777, 10307, 10311, 10507,
-                                                  //|  10513, 10519, 13225, 14085, 14564, 15496, 15561, 16112, 16187, 16192, 1652
-                                                  //| 6, 16530, 16603, 16612, 16617, 16625, 16875, 17523, 18124, 18616, 18780, 20
-                                                  //| 979, 21076, 21144, 21855, 21987, 22093, 23312, 23581, 23877, 24240, 24243, 
-                                                  //| 24245, 24523, 24950, 25973, 25981, 25985, 26068, 26143, 26269, 27558, 28721
-                                                  //| , 28840, 28879, 28956, 28963, 28978, 29155, 29318, 29444, 29912, 30157, 312
-                                                  //| 77, 32011, 32044)),0.00
+                                                  //> queryResults  : manning_ir.ch2.PhrasalSearchLib_10.QueryTermResults = List(
+                                                  //| Map(101 -> Incidences(Locations(101,our,118,TreeSet(201, 244, 273, 555, 582
+                                                  //| , 674, 707, 715, 761, 838, 869, 875, 910, 1026, 1187, 1289, 1366, 1409, 141
+                                                  //| 2, 1462, 1477, 1482, 1515, 1519, 1582, 1596, 1601, 1606, 1647, 1770, 2275, 
+                                                  //| 2356, 2393, 2410, 2412, 2417, 3276, 3300, 3547, 4906, 4913, 4924, 5180, 518
+                                                  //| 8, 6767, 7958, 8037, 8044, 8126, 8206, 8244, 8299, 8351, 8400, 8403, 8587, 
+                                                  //| 8612, 8624, 8777, 10307, 10311, 10507, 10513, 10519, 13225, 14085, 14564, 1
+                                                  //| 5496, 15561, 16112, 16187, 16192, 16526, 16530, 16603, 16612, 16617, 16625,
+                                                  //|  16875, 17523, 18124, 18616, 18780, 20979, 21076, 21144, 21855, 21987, 2209
+                                                  //| 3, 23312, 23581, 23877, 24240, 24243, 24245, 24523, 24950, 25973, 25981, 25
+                                                  //| 985, 26068, 26143, 26269, 27558, 28721, 28840, 28879, 28956, 28963, 28978, 
+                                                  //| 29155, 29318, 29444, 29912, 30157, 31277, 32011, 32044)),0.00365), 102 -> I
+                                                  //| ncidences(Locations(102
                                                   //| Output exceeds cutoff limit.
 	//val queryResults = queryFrequency	("earth alike")
 	//val queryResults = queryFrequency	("And, in conclusion, Elvis")

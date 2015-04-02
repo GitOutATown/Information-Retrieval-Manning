@@ -142,23 +142,24 @@ object PhrasalSearchLib_10 {
 					val biwords = for{
 			  			leftDocIncidences <- leftTerm.values // iterate each individual document's Incidences for this term
 						leftTermIndexInDoc <- leftDocIncidences.locs.indexes // iterate each location of the left term in this doc
-	   					leftTermStr = leftDocIncidences.locs.term  //leftDocQueryResult.docIncidences.term
+	   					leftTermStr = leftDocIncidences.locs.term // term (string)
 	   					docId = leftDocIncidences.locs.docId // the id of the doc being queried
-	   					// Now to see if the next term is also in this document, and if so,
-	   					// does the document have a location value of leftIndex + 1
-	   					rightTermLocationIndex:Int = xs.head.get(docId) match { // right term locations in this document
+	   					// Now see if the next term in the phrase query is also in this document, 
+	   					// and if so, is the location value leftIndex + 1
+	   					rightTermLocationIndex = xs.head.get(docId) match { // right term locations in this document
 	   						case Some(incds) => { // Yes, this document also contains the next term in the phrase
 	   							// So does that term exist at leftIndex + 1 ?
-	   							incds.locs.indexes.toList.indexOf(leftTermIndexInDoc + 1)
+	   							incds.locs.indexes.toList.indexOf(leftTermIndexInDoc + 1) // TODO: This should be refactored to return the list of indexes if they exist so as to not repeat the operation in the yield below
 	   						}
-	   						case None => -1
+	   						case None => -1 // next term not in this doc
 	   					}  						
-	  					if rightTermLocationIndex > -1 // if true, we found a sequential pair
+	  					if rightTermLocationIndex > -1 // if true, we've found a sequential pair
 			  		} yield { // therefor
 			  			// TODO: This series of dots is ugly
 			  			// This is not actually necessary, since we already know the term exists and its index, however, this proves it, which is good while in development
 			  			val rightTermIndexInDoc = xs.head.get(docId).get.locs.indexes.toList(rightTermLocationIndex)
 			  			val rightTermStr = xs.head.get(docId).get.locs.term
+			  			// package up the sequential pair of phrase terms we've found in our document
 			  			BiWord(
 			  				docId,
 			  				leftTermIndexInDoc, rightTermIndexInDoc,
