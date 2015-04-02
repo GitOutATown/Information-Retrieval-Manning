@@ -68,21 +68,14 @@ object PhrasalSearch_lab_10 {
 	val queryFrequency = freqRank(5)_ // set rank rounding
                                                   //> queryFrequency  : String => List[List[manning_ir.ch2.PhrasalSearchLib_9.Que
                                                   //| ryResult]] = <function1>
-	val queryResults = queryFrequency("Upon a tawny")
+	val queryResults = queryFrequency("gipsy's lust")
                                                   //> queryResults  : List[List[manning_ir.ch2.PhrasalSearchLib_9.QueryResult]] =
-                                                  //|  List(List(QueryResult(Incidences(101,upon,54,TreeSet(53, 985, 1211, 1385, 
-                                                  //| 1938, 2943, 3018, 3060, 3214, 3393, 3536, 4050, 5682, 5921, 5991, 6696, 670
-                                                  //| 8, 6777, 7721, 8623, 8786, 9255, 10335, 11413, 12294, 12803, 14214, 15673, 
-                                                  //| 15728, 15927, 15933, 17207, 17566, 17676, 17772, 17850, 18163, 18193, 18286
-                                                  //| , 18370, 19423, 19555, 19983, 20024, 22955, 25471, 26087, 27674, 28455, 286
-                                                  //| 01, 28828, 31095, 31679, 32071)),0.00167), QueryResult(Incidences(104,upon,
-                                                  //| 51,TreeSet(348, 527, 825, 1696, 1873, 2282, 2367, 3387, 3501, 3874, 4942, 5
-                                                  //| 071, 5960, 5994, 6870, 7342, 8187, 8553, 8600, 9066, 10055, 10493, 12406, 1
-                                                  //| 2543, 14734, 14843, 15229, 15552, 16031, 16427, 17827, 18863, 19353, 20495,
-                                                  //|  20834, 21583, 21628, 21698, 21835, 23471, 24593, 24702, 24726, 26003, 2635
-                                                  //| 6, 26733, 27050, 27086, 27638, 27913, 27980)),0.00182), QueryResult(Inciden
-                                                  //| ces(100,upon,58,TreeSet
-                                                  //| Output exceeds cutoff limit.
+                                                  //|  List(List(QueryResult(Incidences(100,gipsy's,1,TreeSet(95)),4.0E-5)), List
+                                                  //| (QueryResult(Incidences(101,lust,2,TreeSet(5879, 5951)),6.0E-5), QueryResul
+                                                  //| t(Incidences(105,lust,1,TreeSet(12539)),6.0E-5), QueryResult(Incidences(103
+                                                  //| ,lust,2,TreeSet(13615, 13790)),1.1E-4), QueryResult(Incidences(104,lust,4,T
+                                                  //| reeSet(5292, 8127, 8410, 11573)),1.4E-4), QueryResult(Incidences(100,lust,4
+                                                  //| ,TreeSet(96, 4688, 13083, 13531)),1.5E-4)))
 	
 	queryResults foreach(
 		queryResults => {
@@ -90,22 +83,13 @@ object PhrasalSearch_lab_10 {
 			queryResults foreach(doc => println(doc.incidences.term + ", " + doc.incidences.docId + ", " + doc.rankMetric))
 		}
 	)                                         //> ----------------------------------
-                                                  //| upon, 101, 0.00167
-                                                  //| upon, 104, 0.00182
-                                                  //| upon, 100, 0.00214
-                                                  //| upon, 102, 0.00229
-                                                  //| upon, 105, 0.0024
-                                                  //| upon, 103, 0.00328
+                                                  //| gipsy's, 100, 4.0E-5
                                                   //| ----------------------------------
-                                                  //| a, 100, 0.01216
-                                                  //| a, 102, 0.01252
-                                                  //| a, 103, 0.01354
-                                                  //| a, 104, 0.01574
-                                                  //| a, 101, 0.01631
-                                                  //| a, 105, 0.01775
-                                                  //| ----------------------------------
-                                                  //| tawny, 100, 4.0E-5
-                                                  //| tawny, 105, 6.0E-5
+                                                  //| lust, 101, 6.0E-5
+                                                  //| lust, 105, 6.0E-5
+                                                  //| lust, 103, 1.1E-4
+                                                  //| lust, 104, 1.4E-4
+                                                  //| lust, 100, 1.5E-4
   // Dependancy on preserved order of query in results
   // TODO: What about biword ranking?
   // What about assembling tuples of as much of the phrase as is found?
@@ -141,16 +125,15 @@ object PhrasalSearch_lab_10 {
   } // end biWord                                 //> biWord: (queryTermResults: List[List[manning_ir.ch2.PhrasalSearchLib_9.Quer
                                                   //| yResult]])List[List[(Long, Long)]]
   
-  val biWordResults = biWord(queryResults)        //> biWordResults  : List[List[(Long, Long)]] = List(List((348,349), (60,61), (
-                                                  //| 15108,15109), (12246,12247)), List((61,62)))
+  val biWordResults = biWord(queryResults)        //> biWordResults  : List[List[(Long, Long)]] = List(List())
   // TODO:
   // There's some promising sequential pairs here.
   // But what's with the empty list. I see 60,61,62 which is a three word series,
   // but the query has four sequential words. And when, in fact, I delete the
   // word I still get 60,61,62, which would look right. I'm glad I ran it with
   // four words!
-  biWordResults foreach println                   //> List((348,349), (60,61), (15108,15109), (12246,12247))
-                                                  //| List((61,62))
+  // AFTER RUNNING MULTIPLE TESTS I'M GETTING TERRIBLE RESULTS!! LOT'S OF EMPTY LISTS--NOTHING AT ALL RETURNED!!
+  biWordResults foreach println                   //> List()
 }
 /*
 
